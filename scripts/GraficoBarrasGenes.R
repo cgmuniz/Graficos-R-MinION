@@ -16,7 +16,6 @@ hist(tabelaCont$Freq[tabelaCont$Freq>1000])
 
 
 
-
 df_adrb1 = read.table("/home/administrator/adri/barcode16_trim_filt13_igblast_db-pass_parse-select.tsv", header = TRUE, sep = "\t")
 df_adrb2 = read.table("/home/administrator/adri/barcode10_trim_filt13_igblast_db-pass_parse-select.tsv", header = TRUE, sep = "\t")
 df_adrb3 = read.table("/home/administrator/adri/barcode13_trim_filt13_igblast_db-pass_parse-select.tsv", header = TRUE, sep = "\t")
@@ -94,6 +93,8 @@ barplot(porc551,
 axis(2, at = y_axis, labels = paste0(y_axis, "%"))
 
 
+
+
 library(ggplot2)
 library(readxl)
 library(tidyr)
@@ -110,7 +111,7 @@ for(i in 2:(total_colunas-1)){
   df_porcentagem[[coluna]] <- coluna_porcentagem
 }
 
-i <- 2
+i <- 3
 
 if(i == 1){
   adrVar <- 'adr_16'
@@ -134,10 +135,12 @@ posicao_excluir <- which(dados_filtrados$v_call == "IGHV5-51")
 dados_filtrados <- dados_filtrados[-posicao_excluir, ]
 
 dados_long <- gather(dados_filtrados, key = "variavel", value = "porcentagem", adrVar, novVar, dezVar)
+dados_long <- dados_long[!is.na(dados_long$v_call),]
 
 # Crie o gráfico utilizando ggplot2
 ggplot(dados_long, aes(x = v_call, y = porcentagem, fill = variavel)) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "v_call", y = "Porcentagem", fill = "Variável") +
+  labs(x = "", y = "", fill = "Corrida") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))
